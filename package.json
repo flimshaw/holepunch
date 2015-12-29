@@ -1,6 +1,6 @@
 {
   "name": "holepunch",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.1",
   "description": "Get a direct ip connection by any means possible - direct (public ip), upnp (Microsoft), nat-pmp (Apple), or punch a hole through a firewall using a Reverse VPN (Daplie).",
   "main": "index.js",
   "bin": {
