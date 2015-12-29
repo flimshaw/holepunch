@@ -20,7 +20,7 @@ cli.parse({
 cli.main(function(_, options) {
   console.log('');
   var args = {};
-  //var hp = require('../');
+  var hp = require('../');
 
   function parsePorts(portstr) {
     var parts = portstr.split(':');
@@ -38,8 +38,11 @@ cli.main(function(_, options) {
     return x;
   }
 
-  console.log('options');
-  console.log(options);
+  if (options.debug) {
+    console.log('options');
+    console.log(options);
+  }
+
   args.debug = options.debug;
   args.plainPorts = options['plain-ports'];
   args.tlsPorts = options['tls-ports'];
@@ -66,29 +69,7 @@ cli.main(function(_, options) {
     args.plainPorts = (args.plainPorts || "65080").toString().split(',').map(parsePorts);
   }
 
-  console.log('args');
-  console.log(args);
-  /*
-  return hp.create({
-    debug: args.debug
-  , plainPorts: args.plainPorts
-  , tlsPorts: args.plainPorts
-  }).register(args, function (err, results) {
-    if (err) {
-      console.error('[Error]: letsencrypt-cli');
-      console.error(err.stack || err);
-      return;
-    }
-
-    // should get back account, path to certs, pems, etc?
-    console.log('\nCertificates installed at:');
-    console.log(Object.keys(results).filter(function (key) {
-      return /Path/.test(key);
-    }).map(function (key) {
-      return results[key];
-    }).join('\n'));
-
+  return hp.create(args).then(function () {
     process.exit(0);
   });
-  */
 });
