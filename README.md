@@ -30,7 +30,9 @@ npm install --global holepunch
 npm install --save holepunch
 ```
 
-## Commandline (CLI)
+## Examples
+
+### Commandline (CLI)
 
 ```bash
 holepunch --help
@@ -39,6 +41,39 @@ holepunch --help
 ```
 holepunch --plain-ports 80,65080 --tls-ports 443,65443
 ```
+
+### API
+
+```javascript
+var punch = require('holepunch');
+
+punch({
+  debug: true
+, plainPorts: [{ internal: 80, external: 80 }]
+, tlsPorts: [{ internal: 443, external: 443 }]
+, ipifyUrls: ['api.ipify.org'],
+, protocols: ['none', 'upnp', 'pmp']
+, rvpnConfigs: []
+}).then(function () {
+});
+```
+
+## API
+
+```javascript
+punch(opts)
+  debug                     // print extra debug info
+
+  tcpPorts                  // these ports will be tested via tcp / http
+
+  tlsPorts                  // these ports will be tested via tls / https
+
+  udpPorts                  // not implemented, not tested
+
+  loopback                  // test ports via http / https
+```
+
+## Commandline
 
 TODO `--prebound-ports 22`
 
@@ -66,12 +101,6 @@ Options:
                             the order they should be tried. (default: null)
 
   -h, --help                Display help and usage details
-```
-
-## API
-
-```javascript
-var punch = require('holepunch');
 ```
 
 ## Non-Root
