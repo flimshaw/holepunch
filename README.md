@@ -74,6 +74,16 @@ Options:
 var punch = require('holepunch');
 ```
 
+## Non-Root
+
+You **do not need root** to map ports, but you may need root to test them.
+
+If you're cool with allowing all node programs to bind to privileged ports, try this:
+
+```bash
+sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
+```
+
 # License
 
 MPL-2.0
