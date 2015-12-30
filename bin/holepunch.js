@@ -8,7 +8,8 @@ var cli = require('cli');
 // TODO txt records for browser plugin: TXT _http.example.com _https.example.com
 cli.parse({
   debug: [ false, " show traces and logs", 'boolean', false ]
-, 'plain-ports': [ false, " Port numbers to test with plaintext loopback. (default: 65080) (formats: <port>,<internal:external>,<internal:external1|external2>)", 'string' ]
+, 'plain-ports': [ false, " Port numbers to test with plaintext loopback. (default: 65080) (formats: <port>,<internal:external>)", 'string' ]
+//, 'plain-ports': [ false, " Port numbers to test with plaintext loopback. (default: 65080) (formats: <port>,<internal:external>,<internal:external1|external2>)", 'string' ]
 , 'tls-ports': [ false, " Port numbers to test with tls loopback. (default: null)", 'string' ]
 , 'ipify-urls': [ false, " Comma separated list of URLs to test for external ip. (default: api.ipify.org)", 'string' ]
 , 'protocols': [ false, " Comma separated list of ip mapping protocols. (default: none,upnp,pmp)", 'string' ]
@@ -28,7 +29,7 @@ cli.main(function(_, options) {
       internal: parseInt(parts[0], 10)
     , external: (parts[1]||parts[0]).split('|').map(function (port) {
         return parseInt(port, 10);
-      })
+      })[0]
     };
 
     return opts;

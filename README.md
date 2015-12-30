@@ -8,6 +8,10 @@ to make home and office devices and services Internet-accessible.
 
 in development
 
+```bash
+node bin/holepunch.js --debug
+```
+
 # License
 
 MPL-2.0
