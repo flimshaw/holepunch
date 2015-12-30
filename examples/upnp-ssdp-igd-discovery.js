@@ -41,7 +41,7 @@ function createSocket() {
   });
 
   socket.on('message', function (chunk, info) {
-    var message = chunk.toString();
+    var message = chunk.toString('utf8');
 
     console.log('[MESSAGE RECEIVED]');
     console.log(info);

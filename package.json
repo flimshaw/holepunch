@@ -1,10 +1,10 @@
 {
   "name": "holepunch",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Get a direct ip connection by any means possible - direct (public ip), upnp (Microsoft), nat-pmp (Apple), or punch a hole through a firewall using a Reverse VPN (Daplie).",
   "main": "index.js",
   "bin": {
-    "holepunch": "holepunch.js"
+    "holepunch": "bin/holepunch.js"
   },
   "directories": {
     "example": "examples"
@@ -16,9 +16,10 @@
     "holepunch-nat-pmp": "^1.0.0-alpha.1",
     "holepunch-upnp": "^1.0.0-alpha.1",
     "localhost.daplie.com-certificates": "^1.1.2",
-    "netroute": "^1.0.2",
-    "request": "^2.67.0",
     "scmp": "^1.0.0"
+  },
+  "optionalDependencies": {
+    "netroute": "^1.0.2"
   },
   "devDependencies": {},
   "scripts": {

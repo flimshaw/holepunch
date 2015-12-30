@@ -71,7 +71,8 @@ cli.main(function(_, options) {
   }
 
   return hp.create(args).then(function () {
-    console.log('wishing wanting waiting');
-    //process.exit(0);
+    //console.log('[HP] wishing wanting waiting');
+    console.log('complete, exiting');
+    process.exit(0);
   });
 });
