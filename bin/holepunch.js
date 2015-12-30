@@ -40,7 +40,7 @@ cli.main(function(_, options) {
   }
 
   if (options.debug) {
-    console.log('options');
+    console.log('[HP CLI] options');
     console.log(options);
   }
 
