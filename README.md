@@ -1,14 +1,15 @@
 # holepunch
 
-A node.js library (api) and command (cli) for using UPnP SSDP
-and ZeroConf (Bonjour) NAT-PMP
-to make home and office devices and services Internet-accessible.
+A commandline tool (cli) and library (node.js api) for making devices
+in your home and office Internet-accessible.
 
-## Progress
+Uses UPnP / SSDP and NAT-PMP / ZeroConf (Bonjour) for port forwarding / port mapping.
 
-it now works :-)
+Works for IPv4 and IPv6 interfaces.
 
-still in development
+## Status
+
+Published as alpha, but nearing release quality.
 
 ```bash
 git clone git@github.com:Daplie/holepunch.git
@@ -32,6 +33,8 @@ npm install --save holepunch
 
 ## Examples
 
+Some examples that work with what's currently published.
+
 ### Commandline (CLI)
 
 ```bash
@@ -44,6 +47,8 @@ holepunch --plain-ports 80,65080 --tls-ports 443,65443
 
 ### API
 
+This is the current Dec 30th alpha api
+
 ```javascript
 var punch = require('holepunch');
 
@@ -54,23 +59,42 @@ punch({
 , ipifyUrls: ['api.ipify.org'],
 , protocols: ['none', 'upnp', 'pmp']
 , rvpnConfigs: []
-}).then(function () {
+}).then(function (mappings) {
+  // be sure to check for an `error` attribute on each mapping
+  console.log(mappings);
+}, function (err) {
+  console.log(err);
 });
 ```
 
-## API
+## API (v1.0.0 draft)
+
+TODO: This is the api that I think I'd like to use for the solid v1.0.0
 
 ```javascript
 punch(opts)
-  debug                     // print extra debug info
 
-  tcpPorts                  // these ports will be tested via tcp / http
+  opts.debug = true | false     // print extra debug info
 
-  tlsPorts                  // these ports will be tested via tls / https
+  opts.mappings = [             // these ports will be tested via tcp / http
+    { internal: 80              // the port which is bound locally
+    , external: 80              // the port as it is exposed on the internet
+    , loopback: true | false    // whether or not to attempt an http(s) loopback test
+    , secure: true | false      // (default: true) whether to use tls or plaintext
+    }
+  ]
 
-  udpPorts                  // not implemented, not tested
+  opts.ipifyUrls = [            // ipify urls
+    'api.ipify.org'             // default
+  ]
 
-  loopback                  // test ports via http / https
+  opts.upnp = true | false      // attempt mapping via nat-upnp
+
+  opts.pmp = true | false       // attempt mapping via nat-pmp
+
+  opts.rvpnConfigs = [
+    '/etc/holepunch/rvpn.json'  // TODO (not implemented)
+  ]
 ```
 
 ## Commandline
