@@ -1,5 +1,5 @@
 # https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx
-# goes in /etc/systemd/system/holepunch.service
+# goes in /etc/systemd/system/multi-user.target.wants/holepunch.service
 # systemctl enable holepunch
 # systemctl start holepunch
 
