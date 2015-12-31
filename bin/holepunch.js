@@ -12,7 +12,9 @@ cli.parse({
 //, 'plain-ports': [ false, " Port numbers to test with plaintext loopback. (default: 65080) (formats: <port>,<internal:external>,<internal:external1|external2>)", 'string' ]
 , 'tls-ports': [ false, " Port numbers to test with tls loopback. (default: null)", 'string' ]
 , 'ipify-urls': [ false, " Comma separated list of URLs to test for external ip. (default: api.ipify.org)", 'string' ]
-, 'protocols': [ false, " Comma separated list of ip mapping protocols. (default: none,upnp,pmp)", 'string' ]
+, protocols: [ false, " Comma separated list of ip mapping protocols. (default: none,upnp,pmp)", 'string' ]
+//, upnp: [ false, " Use nat-upnp. (default: true)", 'boolean' ]
+//, pmp: [ false, " Use nat-pmp. (default: true)", 'boolean' ]
 , 'rvpn-configs': [ false, " Comma separated list of Reverse VPN config files in the order they should be tried. (default: null)", 'string' ]
 // TODO allow standalone, webroot, etc
 });
@@ -22,6 +24,11 @@ cli.main(function(_, options) {
   console.log('');
   var args = {};
   var hp = require('../');
+  var loopback = require('../lib/loopback-listener');
+  var plainPorts = options['plain-ports'];
+  var tlsPorts = options['tls-ports'];
+  var pretest;
+  var protocols;
 
   function parsePorts(portstr) {
     var parts = portstr.split(':');
@@ -45,9 +52,7 @@ cli.main(function(_, options) {
   }
 
   args.debug = options.debug;
-  args.plainPorts = options['plain-ports'];
-  args.tlsPorts = options['tls-ports'];
-  args.protocols = options.protocols;
+  protocols = options.protocols;
   args.ipifyUrls = options['ipify-urls'];
   args.rvpnConfigs = options['rvpn-configs'];
 
@@ -56,21 +61,44 @@ cli.main(function(_, options) {
   } else {
     args.ipifyUrls = (args.ipifyUrls || 'api.ipify.org').split(',');
   }
-  if ('false' === args.protocols || false === args.protocols) {
-    args.protocols = [];
+  if ('false' === protocols || false === protocols) {
+    protocols = [];
   } else {
-    args.protocols = (args.protocols || 'none,upnp,pmp').split(',');
+    protocols = (protocols || 'none,upnp,pmp').split(',');
   }
   // Coerce to string. cli returns a number although we request a string.
-  args.tlsPorts = (args.tlsPorts || "").toString().split(',').filter(exists).map(parsePorts);
+  tlsPorts = (tlsPorts || "").toString().split(',').filter(exists).map(parsePorts);
   args.rvpnConfigs = (args.rvpnConfigs || "").toString().split(',').filter(exists);
-  if ('false' === args.plainPorts || false === args.plainPorts) {
-    args.plainPorts = [];
+  if ('false' === plainPorts || false === plainPorts) {
+    plainPorts = [];
   } else {
-    args.plainPorts = (args.plainPorts || "65080").toString().split(',').map(parsePorts);
+    plainPorts = (plainPorts || "65080").toString().split(',').map(parsePorts);
+  }
+  pretest = (-1 !== protocols.indexOf('none'));
+  args.upnp = options.upnp
+    || (-1 !== protocols.indexOf('upnp')) || (-1 !== protocols.indexOf('ssdp'));
+  args.pmp = options.pmp
+    || (-1 !== protocols.indexOf('pmp')) || (-1 !== protocols.indexOf('nat-pmp'));
+
+  args.mappings = plainPorts.map(function (info) {
+    info.secure = false;
+    info.loopback = pretest;
+    return info;
+  }).concat(tlsPorts.map(function (info) {
+    info.secure = true;
+    info.loopback = pretest;
+    return info;
+  }));
+
+  //var servers = loopback.create(args);
+  loopback.create(args);
+
+  if (args.debug) {
+    console.log('[HP] create servers');
+    //console.log(servers);
   }
 
-  return hp.create(args).then(function () {
+  return hp(args).then(function () {
     //console.log('[HP] wishing wanting waiting');
     console.log('complete, exiting');
     process.exit(0);

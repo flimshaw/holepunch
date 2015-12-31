@@ -47,15 +47,14 @@ holepunch --plain-ports 80,65080 --tls-ports 443,65443
 
 ### API
 
-This is the current Dec 30th alpha api
+This is the current Dec 30th api in master
 
 ```javascript
 var punch = require('holepunch');
 
 punch({
   debug: true
-, plainPorts: [{ internal: 80, external: 80 }]
-, tlsPorts: [{ internal: 443, external: 443 }]
+, mappings: [{ internal: 443, external: 443, secure: true }]
 , ipifyUrls: ['api.ipify.org'],
 , protocols: ['none', 'upnp', 'pmp']
 , rvpnConfigs: []
